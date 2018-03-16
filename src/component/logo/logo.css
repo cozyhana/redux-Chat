@@ -1,0 +1,10 @@
+.logo-container {
+  margin-top: 10px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.logo-img {
+  width: 200px;
+  border-radius: 50%;
+}
