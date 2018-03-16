@@ -9,5 +9,7 @@ class AuthRoute extends React.Component {
     //用户的type 身份是boss 还是牛人
     //用户是否完善信息（选择头像，个人简介）
 
+
+
   }
 }
