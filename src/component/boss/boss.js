@@ -10,7 +10,7 @@ import UserCard from '../usercard/usercard'
   { getUserList }
 )
 class Boss extends React.Component {
-  componentDidMount() {
+  componentWillMount() {
     this.props.getUserList('genius')
   }
   render() {

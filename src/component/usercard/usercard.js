@@ -11,34 +11,30 @@ class UserCard extends React.Component {
     const Body = Card.Body
     return (
       <WingBlank>
-        <WhiteSpace />
-        {
-          this.props.userlist.map(v => (
-            v.avatar ?
-              <Card key={v._id}>
-                <Header
-                  title={v.user}
-                  thumb={require(`../img/${v.avatar}.png`)}
-                  extra={<span>{v.title}</span>}
-                />
-                <Body>
-                  {
-                    v.company ? <div>公司:{v.company}</div> : null
-                  }
-                  {v.desc.split('\n').map(v => (
-                    <div key={v}>{v}</div>
-                  ))}
-                  {
-                    v.type == 'boss' ? <div>薪资:{v.money}</div> : null
-                  }
-                </Body>
-              </Card>
-              : null
-          ))
-        }
+        <WhiteSpace></WhiteSpace>
+        {[].map(v => (
+          v.avatar ? (<Card key={v._id}>
+            <Header
+              title={v.user}
+              thumb={require(`../img/${v.avatar}.png`)}
+              extra={<span>{v.title}</span>}
+            ></Header>
+            <Body>
+              {v.type == 'boss' ? <div>公司:{v.company}</div> : null}
+
+              {v.desc.split('\n').map(d => (
+                <div key={d}>{d}</div>
+              ))}
+              {v.type == 'boss' ? <div>薪资:{v.money}</div> : null}
+            </Body>
+          </Card>) : null
+
+        ))}
       </WingBlank>
     )
+
+
   }
 }
-
 export default UserCard
+
