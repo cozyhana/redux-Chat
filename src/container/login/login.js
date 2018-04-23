@@ -8,21 +8,89 @@ import {
   Button
 } from 'antd-mobile';
 import { connect } from 'react-redux'
-import { login } from '../../redux/user.redux'
 import { Redirect } from 'react-router-dom'
+import { login } from '../../redux/user.redux'
+import imoocForm from '../../component/imooc-form/imooc-form'
+
+//1.高阶组件，装饰器模式
+//高阶组件，传入一个组件，再返回一个组件
+//----------------------
+// function hello() {
+//   console.log('hello')
+// }
+
+// function WrapperHello(fn) {
+//   return function () {
+//     console.log('before say hello');
+//     fn()
+//     console.log('after say hello')
+//   }
+// }
+
+// hello = WrapperHello(hello)
+// hello()
+//----------------------------
+
+//2.@装饰器
+//属性代理
+// function WrapperHello(Comp) {
+//   class WrapComp extends React.Component {
+
+//     render() {
+//       return <div>
+//         <p>这是高阶组件HOC特有的元素</p>
+//         <Comp {...this.props}></Comp>
+//       </div>
+//     }
+//   }
+//   return WrapComp
+// }
+
+// @WrapperHello
+// class Hello extends React.Component {
+//   render() {
+//     return <h2>hf</h2>
+//   }
+// }
+//------------------------------------------
+
+//3.反向继承
+// function WrapperHello(Comp) {
+//   class WrapComp extends Comp {
+//     componentDidMount() {
+//       console.log('高阶组件新增的生命周期，加载完成')
+//     }
+//     render() {
+//       return <Comp></Comp>
+//     }
+//   }
+//   return WrapComp
+// }
+
+// @WrapperHello
+// class Hello extends React.Component {
+//   render() {
+//     return <h2>hf</h2>
+//   }
+// }
+//-----------------------------------------
+
+//4.使用高阶组件的作用是：
+//代码的复用
+//逻辑的抽象
+//反向代理的作用
 
 @connect(
   state => state.user,
   { login }
 )
 
+@imoocForm
+
 class Login extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      user: '',
-      pwd: '',
-    }
+
     this.register = this.register.bind(this);
     this.handleLogin = this.handleLogin.bind(this);
   }
@@ -30,15 +98,10 @@ class Login extends React.Component {
   register() {
     this.props.history.push('/register')
   }
-  //input 输入
-  handleChange(key, val) {
-    this.setState({
-      [key]: val
-    })
-  }
+
   //登录
   handleLogin() {
-    this.props.login(this.state);
+    this.props.login(this.props.state);
   }
   render() {
     return (
@@ -49,11 +112,12 @@ class Login extends React.Component {
           {this.props.msg ? <p className="error-msg">{this.props.msg}</p> : null}
           <List>
             <InputItem
-              onChange={v => this.handleChange('user', v)}
+              onChange={v => this.props.handleChange('user', v)}
             >用户</InputItem>
             <WhiteSpace />
             <InputItem
-              onChange={v => this.handleChange('pwd', v)}
+              onChange={v => this.props.handleChange('pwd', v)}
+              type="password"
             >密码</InputItem>
           </List>
           <Button onClick={this.handleLogin} type="primary">登录</Button>

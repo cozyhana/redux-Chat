@@ -19,6 +19,7 @@ class Bossinfo extends React.Component {
       money: '',
     }
   }
+
   handleChange(key, val) {
     this.setState({
       [key]: val
@@ -27,7 +28,8 @@ class Bossinfo extends React.Component {
 
   render() {
     const path = this.props.location.pathname;
-    const redirect = this.props.redirectTo
+    const redirect = this.props.redirectTo;
+    console.log(redirect);
     return <div>
       {redirect && redirect !== path ? <Redirect to={redirect} /> : ''}
       <NavBar mode="dark">信息完善页</NavBar>
