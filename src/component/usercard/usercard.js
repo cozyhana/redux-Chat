@@ -12,7 +12,7 @@ class UserCard extends React.Component {
     return (
       <WingBlank>
         <WhiteSpace></WhiteSpace>
-        {[].map(v => (
+        {this.props.userlist.map(v => (
           v.avatar ? (<Card key={v._id}>
             <Header
               title={v.user}
