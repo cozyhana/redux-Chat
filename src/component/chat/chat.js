@@ -1,5 +1,5 @@
 import React from 'react'
-import { List, InputItem } from 'antd-mobile'
+import { List, InputItem, NavBar, Icon } from 'antd-mobile'
 import io from 'socket.io-client';
 import { connect } from 'react-redux'
 import { getMsgList, sendMsg, recvMsg } from '../../redux/chat.redux'
@@ -15,13 +15,10 @@ class Chat extends React.Component {
     this.state = { text: '', msg: [] }
   }
   componentDidMount() {
-    // socket.on('resvmsg', (data) => {
-    //   this.setState({
-    //     msg: [...this.state.msg, data.text]
-    //   })
-    // })
-    this.props.getMsgList()
-    this.props.recvMsg()
+    if (!this.props.chat.chatmsg.length) {
+      this.props.getMsgList()
+      this.props.recvMsg()
+    }
   }
   handleSubmit() {
     // socket.emit('sendmsg', { text: this.state.text });
@@ -33,11 +30,46 @@ class Chat extends React.Component {
     this.setState({ text: '' });
   }
   render() {
+    const userid = this.props.match.params.user
+    const Item = List.Item;
+    const users = this.props.chat.users;
+
+    if (!users[userid]) {
+      return null
+    }
+
     return (
-      <div>
-        {this.state.msg.map(v => {
-          return <p key={v}>{v}</p>
+      <div id='chat-page'>
+        <NavBar
+          mod='dark'
+          icon={<Icon type="left" />}
+          onLeftClick={() => {
+            this.props.history.goBack()
+          }}
+        >
+          {users[userid].name}
+        </NavBar>
+
+        {this.props.chat.chatmsg.map(v => {
+          const avatar = require(`../img/${users[v.from].avatar}.png`)
+          return v.from == userid ? (
+            <List key={v._id}>
+              <Item
+                thumb={avatar}
+              >
+                {v.content}
+              </Item>
+            </List>
+          ) : (
+              <List key={v._id}>
+                <Item className='chat-me' extra={<img src={avatar} />}>
+                  {v.content}
+                </Item>
+              </List>
+            )
+
         })}
+
         <div className="stick-footer">
           <List>
             <InputItem

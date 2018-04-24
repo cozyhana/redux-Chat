@@ -6,6 +6,9 @@ const model = require('./model')
 const User = model.getModel('user')
 const Chat = model.getModel('chat')
 const _filter = { 'pwd': 0, '__v': 0 }
+// Chat.remove({}, function (e, d) {
+//   //清空聊天信息
+// })
 
 Router.get('/list', function (req, res) {
   const { type } = req.query
@@ -81,12 +84,22 @@ function md5Pwd(pwd) {
 
 //获取聊天列表
 Router.get('/getmsglist', function (req, res) {
-  const user = req.cookies.user;
+  const user = req.cookies.userid;
   // Chat.find({ '$or', [{ from: user, to: user }]});
-  Chat.find({}, function (err, doc) {
-    if (!err) {//查询无错
-      return res.json({ code: 0, msgs: doc })
-    }
+  //首先查询出用户信息
+  User.find({}, function (e, userdoc) {
+    let users = {}
+    userdoc.forEach(v => {
+      users[v._id] = { name: v.user, avatar: v.avatar }
+    })
+    //查询聊天信息
+    //查询出当前用户的所发和所接收的信息
+    //过滤条件'$or': [{ from: user }, { to: user }]
+    Chat.find({ $or: [{ from: user }, { to: user }] }, function (err, doc) {
+      if (!err) {//查询无错
+        return res.json({ code: 0, msgs: doc, users: users })
+      }
+    })
   })
 })
 
