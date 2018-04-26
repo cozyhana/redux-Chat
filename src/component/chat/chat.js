@@ -3,7 +3,7 @@ import { List, InputItem, NavBar, Icon } from 'antd-mobile'
 import io from 'socket.io-client';
 import { connect } from 'react-redux'
 import { getMsgList, sendMsg, recvMsg } from '../../redux/chat.redux'
-const socket = io.connect('ws://116.62.163.29:3000');
+const socket = io.connect('ws://localhost:9093');
 
 @connect(
   state => state,

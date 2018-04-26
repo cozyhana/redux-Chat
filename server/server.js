@@ -25,8 +25,8 @@ const userRouter = require('./user')
 app.use(cookieParser())
 app.use(bodyParser.json())
 app.use('/user', userRouter)
-server.listen(3000, function () {
-  console.log('Node app start at port 3000')
+server.listen(9093, function () {
+  console.log('Node app start at port 9093')
 })
 
 
