@@ -1,5 +1,5 @@
 import React from 'react'
-import { List, InputItem, NavBar, Icon } from 'antd-mobile'
+import { List, InputItem, NavBar, Icon, Grid } from 'antd-mobile'
 import io from 'socket.io-client';
 import { connect } from 'react-redux'
 import { getMsgList, sendMsg, recvMsg } from '../../redux/chat.redux'
@@ -20,6 +20,12 @@ class Chat extends React.Component {
       this.props.recvMsg()
     }
   }
+  //修正跑马灯
+  fixCarousel() {
+    setTimeout(function () {
+      window.dispatchEvent(new Event('resize'))
+    }, 0);
+  }
   handleSubmit() {
     // socket.emit('sendmsg', { text: this.state.text });
     const from = this.props.user._id;
@@ -27,7 +33,10 @@ class Chat extends React.Component {
     const msg = this.state.text;
 
     this.props.sendMsg({ from, to, msg });
-    this.setState({ text: '' });
+    this.setState({
+      text: '',
+      showEmoji: false
+    });
   }
   render() {
     const userid = this.props.match.params.user
@@ -37,7 +46,7 @@ class Chat extends React.Component {
     if (!users[userid]) {
       return null
     }
-
+    const emojiData = '🐻 🙉 🙉 🙉 🙉 🐻 🐻 🙉 🙉 🙉 🙉 🐻 🐻 🙉 🙉 🙉 🙉 🐻 🐻 🙉 🙉 🙉 🙉 🐻 🐻 🙉 🙉 🙉 🙉 🐻 🐻 🙉 🙉 🙉 🙉 🐻 🐻 🙉 🙉 🙉 🙉 🐻 🐻 🙉 🙉 🙉 🙉 🐻 🙉 🙉 🙉 🙉 🐻 🙉 🙉 🙉 🙉 🐻 🙉 🙉 🙉 🙉'.split(' ').filter(v => v).map(v => ({ text: v }));
     return (
       <div id='chat-page'>
         <NavBar
@@ -51,8 +60,8 @@ class Chat extends React.Component {
         </NavBar>
 
         {this.props.chat.chatmsg.map(v => {
-          const avatar = require(`../img/${users[v.from].avatar}.png`)
-          return v.from == userid ? (
+          const avatar = users.length == 0 ? '' : !users[v.from] ? '' : require(`../img/${users[v.from].avatar}.png`)
+          return v.from == users._id ? (
             <List key={v._id}>
               <Item
                 thumb={avatar}
@@ -67,7 +76,6 @@ class Chat extends React.Component {
                 </Item>
               </List>
             )
-
         })}
 
         <div className="stick-footer">
@@ -78,9 +86,40 @@ class Chat extends React.Component {
               onChange={v => {
                 this.setState({ text: v })
               }}
-              extra={<span onClick={() => this.handleSubmit()}> 发送</span>}
+              extra={
+                <div>
+                  <span
+                    style={{ marginRight: 15 }}
+                    onClick={
+                      () => {
+                        this.setState({
+                          showEmoji: !this.state.showEmoji
+                        })
+                        this.fixCarousel()
+                      }
+                    }
+                  >emo</span>
+                  <span onClick={() => this.handleSubmit()}> 发送</span>
+                </div>
+              }
             />
           </List>
+          {
+            this.state.showEmoji
+              ?
+              <Grid
+                columnNum={9}
+                carouselMaxRow={4}
+                isCarousel={true}
+                data={emojiData}
+                onClick={el => {
+                  this.setState({
+                    text: this.state.text + el.text
+                  })
+                }}
+              />
+              : null
+          }
         </div>
       </div>
     )

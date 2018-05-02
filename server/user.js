@@ -33,6 +33,7 @@ Router.post('/update', function (req, res) {
 })
 Router.post('/login', function (req, res) {
   const { user, pwd } = req.body
+
   User.findOne({ user, pwd: md5Pwd(pwd) }, _filter, function (err, doc) {
     if (!doc) {
       return res.json({ code: 1, msg: '用户名或者密码错误' })
