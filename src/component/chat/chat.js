@@ -2,12 +2,12 @@ import React from 'react'
 import { List, InputItem, NavBar, Icon, Grid } from 'antd-mobile'
 import io from 'socket.io-client';
 import { connect } from 'react-redux'
-import { getMsgList, sendMsg, recvMsg } from '../../redux/chat.redux'
-const socket = io.connect('ws://116.62.163.29:9093');
+import { getMsgList, sendMsg, recvMsg, readMsg } from '../../redux/chat.redux'
+const socket = io.connect('ws://127.0.0.1:9093');
 
 @connect(
   state => state,
-  { getMsgList, sendMsg, recvMsg }
+  { getMsgList, sendMsg, recvMsg, readMsg }
 )
 class Chat extends React.Component {
   constructor(props) {
@@ -19,6 +19,15 @@ class Chat extends React.Component {
       this.props.getMsgList()
       this.props.recvMsg()
     }
+
+  }
+
+  //Router4认为每个路由都是一个组件；
+  //退出时，相当于卸载组件
+  componentWillUnmount() {
+    //标记自己已读
+    const to = this.props.match.params.user; //获取要聊天的对象
+    this.props.readMsg(to);
   }
   //修正跑马灯
   fixCarousel() {

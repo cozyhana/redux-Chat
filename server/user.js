@@ -104,4 +104,22 @@ Router.get('/getmsglist', function (req, res) {
   })
 })
 
+//处理已读信息数量
+Router.post('/readmsg', function (req, res) {
+  const userid = req.cookies.userid;
+  const { from } = req.body;
+  console.log(userid, from)
+  Chat.update(
+    { from, to: userid },
+    { '$set': { read: true } },
+    { 'multi': true },
+    function (err, doc) {
+      if (!err) {
+        return res.json({ code: 0, num: doc.nModified })
+      }
+      else {
+        return res.json({ code: 1, msg: '修改失败' })
+      }
+    })
+})
 module.exports = Router
